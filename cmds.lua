@@ -48,7 +48,7 @@ end
 f.cmds._generic = {
   min_lvl = 3,
   run = function(self, id, cmd, txt)
-  		f_msg("sys", player(id, "name").." used ", "red", cmd)
+		f_msg("sys", player(id, "name").." used ", "red", cmd)
 		parse(cmd:sub(2).." "..txt)
 	end
 }
@@ -132,16 +132,16 @@ f.cmds._team = {
 	end,
   swap = function(self)
 		local temp = {self.locks[1], self.locks[2]}
-			for i = 1, 2 do self.locks[i] = false end
-			for _, id in pairs(player(0, "table")) do
-				local t = player(id, "team")
-				if t == 1 then
-					parse("makect "..id)
-				elseif t >= 2 then
-					parse("maket "..id)
-				end
+		for i = 1, 2 do self.locks[i] = false end
+		for _, id in pairs(player(0, "table")) do
+			local t = player(id, "team")
+			if t == 1 then
+				parse("makect "..id)
+			elseif t >= 2 then
+				parse("maket "..id)
 			end
-			self.locks[1] = temp[2]
+		end
+		self.locks[1] = temp[2]
 		self.locks[2] = temp[1]
 		f_msg("sys", "Teams swapped.")
 	end,

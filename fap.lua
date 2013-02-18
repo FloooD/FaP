@@ -15,6 +15,7 @@ need("am")
 need("fmt")
 need("auth")
 need("cmds")
+need("show_rcon")
 
 --for security:
 io.popen = nil

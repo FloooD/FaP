@@ -8,12 +8,10 @@ f.am = {} --automoney
 --use mode 2 if you want to practice pistol rounds or something.
 f.am.mode = 1
 
-function f.am.onstart()
+function f.am.onspawn(id)
 	if f.am.mode == 0 then return end
 	local m = game("mp_startmoney")
 	if f.am.mode == 1 and m ~= "16000" then return end
-	for _, id in pairs(player(0, "tableliving")) do
-		parse("setmoney "..id.." "..m)
-	end
+	parse("setmoney "..id.." "..m)
 end
-addhook("startround", "f.am.onstart")
+addhook("spawn", "f.am.onspawn")

@@ -8,7 +8,7 @@ function f.cmds.onsay(id, txt)
 	if sym == "!" or sym == "@" then
 		local space = txt:find(" ") or (#txt + 1)
 		local cmd = txt:sub(1, space - 1)
-		local wat = f.cmds.lut[cmd]
+		local wat = f.cmds.lut[cmd:lower()]
 		if not wat then
 			f_msg2(id, "sys", "Command does not exist.")
 			return 1
@@ -174,6 +174,7 @@ f.cmds._team = {
 	end,
   min_lvl = 2,
   run = function(self, id, cmd, txt)
+  		cmd = cmd:lower()
 		if cmd == "@swap" then
 			return self:swap()
 		elseif cmd == "@specall" then 

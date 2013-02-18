@@ -41,6 +41,18 @@ f.cmds.lut = {
   ["@parse"]		= "_parse"
 }
 
+for line in io.lines(f_dir.."default_cmds") do
+	f.cmds.lut["@"..line] = "_generic"
+end
+
+f.cmds._generic = {
+  min_lvl = 3,
+  run = function(self, id, cmd, txt)
+  		f_msg("sys", player(id, "name").." used ", "red", cmd)
+		parse(cmd:sub(2).." "..txt)
+	end
+}
+
 f.cmds._broadcast = {
   times = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, --lOLoloLOLOLolOL
   onleave = function(self, id) self.times[id] = 0 end,

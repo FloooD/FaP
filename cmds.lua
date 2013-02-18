@@ -22,19 +22,21 @@ function f.cmds.onsay(id, txt)
 end
 addhook("say", "f.cmds.onsay")
 
+local function hook(hook, base, func, ...) --watisthisidonteven
+	f.cmds[base]["_"..func] = function(...) return f.cmds[base][func](f.cmds[base], ...) end
+	addhook(hook, "f.cmds."..base.."._"..func, ...)
+end
+
 f.cmds.lut = {
   ["!broadcast"]	= "_broadcast",
   ["!bc"]		= "_broadcast",
   ["!resetscore"]	= "_resetscore",
   ["!rs"]		= "_resetscore",
   ["@say"]		= "_say",
---[[  ["@lock"]		= "_lock",
-  ["@lockt"]		= "_lock",
-  ["@lockct"]		= "_lock",
-  ["@lockspec"]		= "_lock",
-  ["@unlockt"]		= "_lock",
-  ["@unlockct"]		= "_lock",
-  ["@unlockspec"]	= "_lock",]]--do later
+  ["@lock"]		= "_team",
+  ["@unlock"]		= "_team",
+  ["@swap"]		= "_team",
+  ["@specall"]		= "_team",
   ["@p"]		= "_parse",
   ["@parse"]		= "_parse"
 }
@@ -54,7 +56,7 @@ f.cmds._broadcast = {
 		end
 	end
 }
-addhook("leave", "f.cmds._broadcast.onleave")
+hook("leave", "_broadcast", "onleave")
 
 f.cmds._resetscore = {
   min_lvl = 0,
@@ -89,3 +91,110 @@ f.cmds._parse = {
 		end
 	end
 }
+
+f.cmds._team = {
+  menu_title = "Team Control Menu",
+  team_names = {[0] = "Spectators", "Terrorists", "Counter-Terrorists"},
+  locks = {[0] = false, false, false},
+  genmenu = function (self)
+		local list = self.menu_title..","
+		if self.locks[0] and self.locks[1] and self.locks[2] then
+			list = list.."(Lock all),Unlock all,,"
+		elseif self.locks[0] or self.locks[1] or self.locks[2] then
+			list = list.."Lock all,Unlock all,,"
+		else
+			list = list.."Lock all,(Unlock all),,"
+		end
+		for i = 0, 2 do
+			list = list..(self.locks[i] and "Unlock" or "Lock").." "..self.team_names[i]..","
+		end
+		return list..",Swap teams,Makespec all"
+	end,
+  lockall = function(self, lol)
+		for i = 0, 2 do self.locks[i] = lol end
+		f_msg("sys", "All teams "..(lol and "locked." or "unlocked."))
+	end,
+  lock = function(self, tm, lol)
+		self.locks[tm] = lol
+		f_msg(f.color_team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
+	end,
+  swap = function(self)
+		local temp = {self.locks[1], self.locks[2]}
+			for i = 1, 2 do self.locks[i] = false end
+			for _, id in pairs(player(0, "table")) do
+				local t = player(id, "team")
+				if t == 1 then
+					parse("makect "..id)
+				elseif t >= 2 then
+					parse("maket "..id)
+				end
+			end
+			self.locks[1] = temp[2]
+		self.locks[2] = temp[1]
+		f_msg("sys", "Teams swapped.")
+	end,
+  specall = function(self)
+		local temp = {[0] = self.locks[0], self.locks[1], self.locks[2]}
+		for i = 0, 2 do self.locks[i] = false end
+		for _, id in pairs(player(0, "table")) do
+			parse("makespec "..id)
+		end
+		for i = 0, 2 do self.locks[i] = temp[i] end
+	end,
+  onmenu = function(self, id, title, btn)
+		if title ~= self.menu_title then return end
+		
+		if btn == 1 then
+			self:lockall(true)
+		elseif btn == 2 then
+			self:lockall(false)
+		elseif btn == 4 or btn == 5 or btn == 6 then
+			local tm = btn - 4
+			self:lock(tm, not self.locks[tm])
+		elseif btn == 8 then
+			self:swap()
+		elseif btn == 9 then
+			self:specall()
+		else
+			return
+		end
+		menu(id, self:genmenu())
+	end,
+  onteam = function(self, id, team)
+  		local pteam = player(id, "team")
+		if pteam == 3 then pteam = 2 end
+		if pteam == team then return end
+  		if self.locks[pteam] then
+			f_msg2(id, "sys", "Your team is locked.")
+			return 1
+		elseif self.locks[team] then
+			f_msg2(id, "sys", "The "..self.team_names[team].." team is locked.")
+			return 1
+		end
+	end,
+  min_lvl = 2,
+  run = function(self, id, cmd, txt)
+		if cmd == "@swap" then
+			return self:swap()
+		elseif cmd == "@specall" then 
+			return self:specall()
+		end
+		local lol = (cmd == "@lock")
+		txt=txt:lower()
+		if txt == "" then
+			return menu(id, self:genmenu())
+		elseif txt == "all" then
+			return self:lockall(lol)
+		elseif txt == "spec" then
+			return self:lock(0, lol)
+		elseif txt == "t" then
+			return self:lock(1, lol)
+		elseif txt == "ct" then
+			return self:lock(2, lol)
+		else
+			f_msg2(id, "sys", "Usage "..cmd.." ** where ** is spec, t, or ct or just use "..cmd.." to open a menu.")
+		end
+	end
+}
+hook("team", "_team", "onteam")
+hook("menu", "_team", "onmenu")

@@ -1,9 +1,6 @@
 FlooD's admin scriPt
 
 TODO:
-medium - team locking messages, text commands @lock t ct etc...
-medium - @parse: split ";" and msg/print/log
-easy - show rcon cmds
-hard - admin configuration files. modify admins in-game?
+medium - various commands
+hard - admin configuration files. modify admins in-game with files properly synced.
 medium - server setting presets, files?
-trivial - rewrite everything

@@ -38,7 +38,9 @@ f.cmds.lut = {
   ["@swap"]		= "_team",
   ["@specall"]		= "_team",
   ["@p"]		= "_parse",
-  ["@parse"]		= "_parse"
+  ["@parse"]		= "_parse",
+  ["@whois"]		= "_whois",
+  ["@rl"]		= "_rl"
 }
 
 for line in io.lines(f_dir.."default_cmds") do
@@ -223,5 +225,13 @@ f.cmds._whois = {
 		f_msg2(id, "sys", "Name: "..player(pid, "name"))
 		f_msg2(id, "sys", "IP: "..player(pid, "ip"))
 		f_msg2(id, "sys", "USGN: "..(player(pid, "usgn") or "none"))
+	end
+}
+
+f.cmds._rl = {
+  min_lvl = 2,
+  run = function(self, id, cmd, txt)
+  		parse("sv_map "..game("sv_map"))
+  		f_msg("sys", player(id, "name").." used ", "red", cmd)
 	end
 }

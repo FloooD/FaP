@@ -195,15 +195,15 @@ f.cmds._team = {
 		local lol = (cmd == "@lock")
 		txt=txt:lower()
 		if txt == "" then
-			return menu(id, self:genmenu())
+			menu(id, self:genmenu())
 		elseif txt == "all" then
-			return self:lockall(lol)
+			self:lockall(lol)
 		elseif txt == "spec" then
-			return self:lock(0, lol)
+			self:lock(0, lol)
 		elseif txt == "t" then
-			return self:lock(1, lol)
+			self:lock(1, lol)
 		elseif txt == "ct" then
-			return self:lock(2, lol)
+			self:lock(2, lol)
 		else
 			f_msg2(id, "sys", "Usage "..cmd.." ** where ** is spec, t, or ct or just use "..cmd.." to open a menu.")
 		end
@@ -211,3 +211,17 @@ f.cmds._team = {
 }
 hook("team", "_team", "onteam")
 hook("menu", "_team", "onmenu")
+
+f.cmds._whois = {
+  min_lvl = 2,
+  run = function(self, id, cmd, txt)
+		local pid = tonumber(txt)
+		if not player(pid, "exists") then
+			f_msg2(id, "sys", "Player with id "..pid.." does not exist.")
+			return
+		end
+		f_msg2(id, "sys", "Name: "..player(pid, "name"))
+		f_msg2(id, "sys", "IP: "..player(pid, "ip"))
+		f_msg2(id, "sys", "USGN: "..(player(pid, "usgn") or "none"))
+	end
+}

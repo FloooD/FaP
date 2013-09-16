@@ -238,14 +238,14 @@ f.cmds._whois = {
 			f_msg2(id, "sys", "Player with id "..pid.." does not exist.")
 			return 0
 		end
-		f_msg2(id, "sys", "Name: "..player(pid, "name"))
-		f_msg2(id, "sys", "IP: "..player(pid, "ip"))
+		f_msg2(id, "sys", "name: "..player(pid, "name"))
+		f_msg2(id, "sys", "ip: "..player(pid, "ip"))
 		local u = player(pid, "usgn")
 		if u then
-			f_msg2(id, "sys", "usde id: "..u)
-			f_msg2(id, "sys", "usde name: "..(f.usdeids[u] or "not in list"))
+			f_msg2(id, "sys", "usgn id: "..u)
+			f_msg2(id, "sys", "usgn name: "..(f.usdeids[u] or "not in list"))
 		else
-			f_msg2(id, "sys", "No usde id")
+			f_msg2(id, "sys", "no usgn id")
 		end
 		return 1
 	end
@@ -255,6 +255,13 @@ f.cmds._rl = {
 --reloads server by changing to current map
   min_lvl = 3,
   run = function(self, id, cmd, txt)
+		f_msg(id, "sys", "Reloading server...")
+		if f_ip then
+			local port = game("sv_hostport")
+			for _, i in player(0, "table") do
+				parse("reroute "..i.." "f_ip"..":"..port)
+			end
+		end
   		parse("map "..game("sv_map"))
   		return 1
 	end

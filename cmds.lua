@@ -59,6 +59,7 @@ f.cmds._generic = {
   min_lvl = 3,
   run = function(self, id, cmd, txt)
 		parse(cmd:sub(2).." "..txt)
+		return 1
 	end
 }
 

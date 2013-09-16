@@ -17,4 +17,5 @@ f.colors = {
   ct		= "©050150255"
 }
 
+f.color_char = "©"
 f.color_team = {[0] = "spec", "tt", "ct", "ct"}

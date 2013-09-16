@@ -5,7 +5,7 @@ f.fmt = true
 local function c(...)
 	local ret =""
 	for i, v in ipairs(arg) do
-		ret = ret..((i % 2 == 1) and f.colors.presets[v] or f.color.char..v)
+		ret = ret..((i % 2 == 1) and f.colors.presets[v] or f.colors.char..v)
 	end
 	return ret
 end

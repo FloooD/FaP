@@ -64,7 +64,7 @@ f.cmds._broadcast = {
   run =	function(self, id, cmd, txt)
 		local dt = self.times[id] - os.time()
 		if dt <= 0 then
-			f_msg(f.color.team[player(id, "team")], player(id, "name"), "green", " (BROADCAST): ", "std", txt)
+			f_msg(f.colors.team[player(id, "team")], player(id, "name"), "green", " (BROADCAST): ", "std", txt)
 			self.times[id] = os.time() + 7 --magic number umad??
 		else
 			f_msg2(id, "sys", dt.." seconds until next broadcast.")
@@ -79,7 +79,7 @@ f.cmds._resetscore = {
 		if player(id, "deaths") ~= 0 or player(id, "score") ~= 0 then
 			parse("setscore "..id.." 0")
 			parse("setdeaths "..id.." 0")
-			f_msg(f.color.team[player(id, "team")], player(id, "name"), "sys", " reset his score.")
+			f_msg(f.colors.team[player(id, "team")], player(id, "name"), "sys", " reset his score.")
 		else
 			f_msg2(id, "sys", "Score already 0/0.")
 		end
@@ -131,7 +131,7 @@ f.cmds._team = {
 	end,
   lock = function(self, tm, lol)
 		self.locks[tm] = lol
-		f_msg(f.color.team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
+		f_msg(f.colors.team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
 	end,
   swap = function(self)
 		local temp = {self.locks[1], self.locks[2]}

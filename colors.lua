@@ -19,5 +19,5 @@ f.colors.presets = {
   ct		= "©050150255"
 }
 
-f.color.char = "©"
-f.color.team = {[0] = "spec", "tt", "ct", "ct"}
+f.colors.char = "©"
+f.colors.team = {[0] = "spec", "tt", "ct", "ct"}

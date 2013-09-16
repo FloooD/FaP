@@ -1,4 +1,6 @@
-f.colors = {
+f.colors = {}
+
+f.colors.presets = {
 --name		    r  g  b
   black		= "©000000000",
   blue		= "©000000255",
@@ -17,5 +19,5 @@ f.colors = {
   ct		= "©050150255"
 }
 
-f.color_char = "©"
-f.color_team = {[0] = "spec", "tt", "ct", "ct"}
+f.color.char = "©"
+f.color.team = {[0] = "spec", "tt", "ct", "ct"}

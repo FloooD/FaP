@@ -1,5 +1,6 @@
 need("fmt")
 need("auth")
+need("usdeids")
 
 f.cmds = {}
 
@@ -63,7 +64,7 @@ f.cmds._broadcast = {
   run =	function(self, id, cmd, txt)
 		local dt = self.times[id] - os.time()
 		if dt <= 0 then
-			f_msg(f.color_team[player(id, "team")], player(id, "name"), "green", " (BROADCAST): ", "std", txt)
+			f_msg(f.color.team[player(id, "team")], player(id, "name"), "green", " (BROADCAST): ", "std", txt)
 			self.times[id] = os.time() + 7 --magic number umad??
 		else
 			f_msg2(id, "sys", dt.." seconds until next broadcast.")
@@ -78,7 +79,7 @@ f.cmds._resetscore = {
 		if player(id, "deaths") ~= 0 or player(id, "score") ~= 0 then
 			parse("setscore "..id.." 0")
 			parse("setdeaths "..id.." 0")
-			f_msg(f.color_team[player(id, "team")], player(id, "name"), "sys", " reset his score.")
+			f_msg(f.color.team[player(id, "team")], player(id, "name"), "sys", " reset his score.")
 		else
 			f_msg2(id, "sys", "Score already 0/0.")
 		end
@@ -130,7 +131,7 @@ f.cmds._team = {
 	end,
   lock = function(self, tm, lol)
 		self.locks[tm] = lol
-		f_msg(f.color_team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
+		f_msg(f.color.team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
 	end,
   swap = function(self)
 		local temp = {self.locks[1], self.locks[2]}
@@ -224,12 +225,19 @@ f.cmds._whois = {
 		end
 		f_msg2(id, "sys", "Name: "..player(pid, "name"))
 		f_msg2(id, "sys", "IP: "..player(pid, "ip"))
-		f_msg2(id, "sys", "USGN: "..(player(pid, "usgn") or "none"))
+		local u = player(pid, "usgn")
+		if u then
+			f_msg2(id, "sys", "usde id: "..u)
+			f_msg2(id, "sys", "usde name: "..(f.usdeids[u] or "not in list"))
+		else
+			f_msg2(id, "sys", "No usde id")
+		end
 	end
 }
 
 f.cmds._rl = {
-  min_lvl = 2,
+--reloads server by changing to current map
+  min_lvl = 3,
   run = function(self, id, cmd, txt)
   		parse("sv_map "..game("sv_map"))
   		f_msg("sys", player(id, "name").." used ", "red", cmd)

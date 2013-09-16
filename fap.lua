@@ -16,6 +16,7 @@ need("fmt")
 need("auth")
 need("cmds")
 need("show_rcon")
+need("usdeids")
 
 --for security:
 io.popen = nil

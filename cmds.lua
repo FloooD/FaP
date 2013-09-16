@@ -259,7 +259,7 @@ f.cmds._rl = {
 		if f_ip then
 			local port = game("sv_hostport")
 			for _, i in player(0, "table") do
-				parse("reroute "..i.." "f_ip"..":"..port)
+				parse("reroute "..i.." "..f_ip.."..":"..port)
 			end
 		end
   		parse("map "..game("sv_map"))

@@ -18,7 +18,14 @@ function f.cmds.onsay(id, txt)
 			f_msg2(id, "sys", "Insufficient privilege.")
 			return 1
 		end
-		return f.cmds[wat]:run(id, cmd, txt:sub(space + 1)) or 1
+		local ret = f.cmds[wat]:run(id, cmd, txt:sub(space + 1))
+		if ret == 0 then --silent
+		elseif ret == 1 then --player used @cmd. rest is hidden
+			f_msg("sys", player(id, "name").." used ", "red", cmd)
+		elseif ret == 2 then --player used @cmd params.
+			f_msg("sys", player(id, "name").." used ", "red", txt)
+		end
+		return 1
 	end
 end
 addhook("say", "f.cmds.onsay")
@@ -51,7 +58,6 @@ end
 f.cmds._generic = {
   min_lvl = 3,
   run = function(self, id, cmd, txt)
-		f_msg("sys", player(id, "name").." used ", "red", cmd)
 		parse(cmd:sub(2).." "..txt)
 	end
 }
@@ -69,6 +75,7 @@ f.cmds._broadcast = {
 		else
 			f_msg2(id, "sys", dt.." seconds until next broadcast.")
 		end
+		return 0
 	end
 }
 hook("leave", "_broadcast", "onleave")
@@ -79,9 +86,10 @@ f.cmds._resetscore = {
 		if player(id, "deaths") ~= 0 or player(id, "score") ~= 0 then
 			parse("setscore "..id.." 0")
 			parse("setdeaths "..id.." 0")
-			f_msg(f.colors.team[player(id, "team")], player(id, "name"), "sys", " reset his score.")
+			return 1
 		else
 			f_msg2(id, "sys", "Score already 0/0.")
+			return 0
 		end
 	end
 }
@@ -90,6 +98,7 @@ f.cmds._say = {
   min_lvl = 1,
   run =	function(self, id, cmd, txt)
 		f_msg(f.auth.tab[id][3], player(id, "name")..": ", "white", txt)
+		return 0
 	end
 }
 
@@ -104,6 +113,7 @@ f.cmds._parse = {
 			f_msg("sys", player(id, "name").." used ", "red", cmd.." "..c:gsub("%s.*", ""))
 			parse(c)
 		end
+		return 2
 	end
 }
 
@@ -191,9 +201,11 @@ f.cmds._team = {
   run = function(self, id, cmd, txt)
   		cmd = cmd:lower()
 		if cmd == "@swap" then
-			return self:swap()
+			self:swap()
+			return 1
 		elseif cmd == "@specall" then 
-			return self:specall()
+			self:specall()
+			return 1
 		end
 		local lol = (cmd == "@lock")
 		txt=txt:lower()
@@ -209,7 +221,9 @@ f.cmds._team = {
 			self:lock(2, lol)
 		else
 			f_msg2(id, "sys", "Usage "..cmd.." ** where ** is spec, t, or ct or just use "..cmd.." to open a menu.")
+			return 0
 		end
+		return 2
 	end
 }
 hook("team", "_team", "onteam")
@@ -221,7 +235,7 @@ f.cmds._whois = {
 		local pid = tonumber(txt)
 		if not player(pid, "exists") then
 			f_msg2(id, "sys", "Player with id "..pid.." does not exist.")
-			return
+			return 0
 		end
 		f_msg2(id, "sys", "Name: "..player(pid, "name"))
 		f_msg2(id, "sys", "IP: "..player(pid, "ip"))
@@ -232,6 +246,7 @@ f.cmds._whois = {
 		else
 			f_msg2(id, "sys", "No usde id")
 		end
+		return 1
 	end
 }
 
@@ -239,7 +254,7 @@ f.cmds._rl = {
 --reloads server by changing to current map
   min_lvl = 3,
   run = function(self, id, cmd, txt)
-  		parse("sv_map "..game("sv_map"))
-  		f_msg("sys", player(id, "name").." used ", "red", cmd)
+  		parse("map "..game("sv_map"))
+  		return 1
 	end
 }

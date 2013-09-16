@@ -258,7 +258,7 @@ f.cmds._rl = {
 		f_msg(id, "sys", "Reloading server...")
 		if f_ip then
 			local port = game("sv_hostport")
-			for _, i in player(0, "table") do
+			for _, i in pairs(player(0, "table")) do
 				parse("reroute "..i.." "..f_ip..":"..port)
 			end
 		end

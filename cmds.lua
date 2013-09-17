@@ -313,11 +313,6 @@ f.cmds._users = {
 			elseif ret == 3 then
 				f_msg2(id, "sys", "color not found. user with usgn "..u.." added successfully with default color of red")
 			end
-			for i = 1, 32 do
-				if player(i, "usgn") == u then f.auth.onjoin(i) end
-			end
-			f.users.write()
-			return 1
 		elseif cmd == "@userdel" then
 			if not exists then
 				f_msg2(id, "sys", "user with usgn "..u.." does not exist.")
@@ -325,11 +320,11 @@ f.cmds._users = {
 				return 0
 			end
 			f.users.tab[u] = nil
-			for i = 1, 32 do
-				if player(i, "usgn") == u then f.auth.onjoin(u) end
-			end
-			f.users.write()
-			return 1
 		end
+		for i = 1, 32 do
+			if player(i, "usgn") == u then f.auth.onjoin(u) end
+		end
+		f.users.write()
+		return 1
 	end
 }

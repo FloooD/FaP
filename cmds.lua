@@ -42,9 +42,11 @@ f.cmds.lut = {
   ["!rs"]		= "_resetscore",
   ["@say"]		= "_say",
   ["@lock"]		= "_team",
-  ["@unlock"]		= "_team",
   ["@swap"]		= "_team",
   ["@specall"]		= "_team",
+  ["@makespec"]		= "_team",
+  ["@maket"]		= "_team",
+  ["@makect"]		= "_team",
   ["@p"]		= "_parse",
   ["@parse"]		= "_parse",
   ["@whois"]		= "_whois",
@@ -52,19 +54,27 @@ f.cmds.lut = {
 }
 
 for line in io.lines(f_dir.."default_cmds") do
-	f.cmds.lut["@"..line] = "_generic"
+	if not f.cmds.lut["@"..line] then
+		f.cmds.lut["@"..line] = "_generic"
+	end
 end
 
 f.cmds._generic = {
   min_lvl = 3,
   run = function(self, id, cmd, txt)
+		print("@COMMAND: NAME="..player(id, "name")..
+			" IP="..player(id, "ip")..":"..player(id, "port")..
+			" USGN="..player(id, "usgn")..
+			" CMD="..cmd..(txt and " "..txt or ""))
 		parse(cmd:sub(2).." "..txt)
 		return 1
 	end
 }
 
+
+
 f.cmds._broadcast = {
-  times = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}, --lOLoloLOLOLolOL
+  times = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
   onleave = function(self, id) self.times[id] = 0 end,
 
   min_lvl = 0,
@@ -72,7 +82,7 @@ f.cmds._broadcast = {
 		local dt = self.times[id] - os.time()
 		if dt <= 0 then
 			f_msg(f.colors.team[player(id, "team")], player(id, "name"), "green", " (BROADCAST): ", "std", txt)
-			self.times[id] = os.time() + 7 --magic number umad??
+			self.times[id] = os.time() + 7
 		else
 			f_msg2(id, "sys", dt.." seconds until next broadcast.")
 		end
@@ -106,7 +116,7 @@ f.cmds._say = {
 f.cmds._parse = {
   min_lvl = 4,
   run = function(self, id, cmd, txt)
-		print("PARSE: NAME="..player(id, "name")..
+		print("@PARSE: NAME="..player(id, "name")..
 			" IP="..player(id, "ip")..":"..player(id, "port")..
 			" USGN="..player(id, "usgn")..
 			" CMD="..cmd..(txt and " "..txt or ""))
@@ -119,34 +129,15 @@ f.cmds._parse = {
 }
 
 f.cmds._team = {
-  menu_title = "Team Control Menu",
   team_names = {[0] = "Spectators", "Terrorists", "Counter-Terrorists"},
-  locks = {[0] = false, false, false},
-  genmenu = function (self)
-		local list = self.menu_title..","
-		if self.locks[0] and self.locks[1] and self.locks[2] then
-			list = list.."(Lock all),Unlock all,,"
-		elseif self.locks[0] or self.locks[1] or self.locks[2] then
-			list = list.."Lock all,Unlock all,,"
-		else
-			list = list.."Lock all,(Unlock all),,"
-		end
-		for i = 0, 2 do
-			list = list..(self.locks[i] and "Unlock" or "Lock").." "..self.team_names[i]..","
-		end
-		return list..",Swap teams,Makespec all"
-	end,
-  lockall = function(self, lol)
-		for i = 0, 2 do self.locks[i] = lol end
-		f_msg("sys", "All teams "..(lol and "locked." or "unlocked."))
-	end,
-  lock = function(self, tm, lol)
-		self.locks[tm] = lol
-		f_msg(f.colors.team[tm], self.team_names[tm], "sys", " team "..(lol and "locked." or "unlocked."))
-	end,
+  invert_name_tab = {["none"] = -1, ["spec"] = 0, ["t"] = 1, ["ct"] = 2, ["all"] = 3},
+  lock_state = -1,
   swap = function(self)
-		local temp = {self.locks[1], self.locks[2]}
-		for i = 1, 2 do self.locks[i] = false end
+		local temp = self.lock_state
+		if temp == 1 or temp == 2 then
+			temp = 3 - temp
+		end
+		self.lock_state = -1
 		for _, id in pairs(player(0, "table")) do
 			local t = player(id, "team")
 			if t == 1 then
@@ -155,45 +146,53 @@ f.cmds._team = {
 				parse("maket "..id)
 			end
 		end
-		self.locks[1] = temp[2]
-		self.locks[2] = temp[1]
-		f_msg("sys", "Teams swapped.")
+		self.lock_state = temp
 	end,
   specall = function(self)
-		local temp = {[0] = self.locks[0], self.locks[1], self.locks[2]}
-		for i = 0, 2 do self.locks[i] = false end
+		local temp = self.lock_state
+		self.lock_state = -1
 		for _, id in pairs(player(0, "table")) do
 			parse("makespec "..id)
 		end
-		for i = 0, 2 do self.locks[i] = temp[i] end
+		self.lock_state = temp
 	end,
   onmenu = function(self, id, title, btn)
-		if title ~= self.menu_title then return end
+		if title ~= "Team Control Menu" then return end
 		
 		if btn == 1 then
-			self:lockall(true)
+			self.lock_state = -1
+			f_msg("sys", player(id, "name").." unlocked all teams")
 		elseif btn == 2 then
-			self:lockall(false)
+			self.lock_state = 3
+			f_msg("sys", player(id, "name").." locked all teams")
 		elseif btn == 4 or btn == 5 or btn == 6 then
-			local tm = btn - 4
-			self:lock(tm, not self.locks[tm])
+			local l = btn - 4
+			self.lock_state = l
+			f_msg("sys", player(id, "name").." locked "..self.team_names[l].. " team")
 		elseif btn == 8 then
 			self:swap()
+			f_msg("sys", player(id, "name").." swapped teams")
 		elseif btn == 9 then
 			self:specall()
+			f_msg("sys", player(id, "name").." used makespec all")
 		else
 			return
 		end
-		menu(id, self:genmenu())
 	end,
   onteam = function(self, id, team)
+  		if self.lock_state == -1 then
+			return
+		end
   		local pteam = player(id, "team")
 		if pteam == 3 then pteam = 2 end
 		if pteam == team then return end
-  		if self.locks[pteam] then
+		if self.lock_state == 3 then
+			f_msg2(id, "sys", "All teams are locked.")
+			return 1
+		elseif self.lock_state == pteam then
 			f_msg2(id, "sys", "Your team is locked.")
 			return 1
-		elseif self.locks[team] then
+		elseif self.lock_state == team then
 			f_msg2(id, "sys", "The "..self.team_names[team].." team is locked.")
 			return 1
 		end
@@ -207,22 +206,25 @@ f.cmds._team = {
 		elseif cmd == "@specall" then 
 			self:specall()
 			return 1
+		elseif cmd:sub(1,5) == "@make" then
+			local temp = self.lock_state
+			self.lock_state = -1
+			parse(cmd:sub(2).." "..txt)
+			self.lock_state = temp
+			return 1
 		end
-		local lol = (cmd == "@lock")
 		txt=txt:lower()
 		if txt == "" then
-			menu(id, self:genmenu())
-		elseif txt == "all" then
-			self:lockall(lol)
-		elseif txt == "spec" then
-			self:lock(0, lol)
-		elseif txt == "t" then
-			self:lock(1, lol)
-		elseif txt == "ct" then
-			self:lock(2, lol)
+			menu(id, "Team Control Menu,Lock none,Lock all,,Lock Spectators,Lock Terrorists,Lock Counter-Terrorists,,Swap teams,Makespec all")
 		else
-			f_msg2(id, "sys", "Usage "..cmd.." ** where ** is spec, t, or ct or just use "..cmd.." to open a menu.")
-			return 0
+			local s = self.invert_name_tab[txt]
+			if not s then
+				f_msg2(id, "sys", "Usage: ", "white", "@lock **", "sys",
+					" where ** is all, none, spec, t, or ct or just use",
+					"white", "@lock", "sys", " to open a menu.")
+				return 0
+			end
+			self.lock_state = s
 		end
 		return 2
 	end
@@ -256,12 +258,6 @@ f.cmds._rl = {
   min_lvl = 3,
   run = function(self, id, cmd, txt)
 		f_msg(id, "sys", "Reloading server...")
-		if f_ip then
-			local port = game("sv_hostport")
-			for _, i in pairs(player(0, "table")) do
-				parse("reroute "..i.." "..f_ip..":"..port)
-			end
-		end
   		parse("map "..game("sv_map"))
   		return 1
 	end

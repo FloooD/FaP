@@ -6,7 +6,6 @@
 
 f = {}
 f_dir = "sys/lua/" --change to where all the FaP lua files are located
---f_ip = "75.126.126.196" --uncomment and change to your server's ip
 function need(smth)
 	if not f[smth] then dofile(f_dir..smth..".lua") end
 end

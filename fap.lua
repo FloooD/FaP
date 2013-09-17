@@ -5,7 +5,7 @@
 ---github.com/FloooD/FaP----
 
 f = {}
-f_dir = "sys/lua/" --change to where all the FaP lua files are located
+if not f_dir then f_dir = "sys/lua/" end
 if not f_admfile then f_admfile = f_dir.."admins" end
 
 function need(smth)

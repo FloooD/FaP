@@ -8,16 +8,7 @@ email - vomitme at gggmail
 xfire - apersonn
 
 usage:
-1. put everything in <cs2d folder>/sys/lua/. if you put the files elsewhere,
-   you will need to modify f_dir in fap.lua.
-2. run the update.sh script in the usdelist directory to update the raw list
-   file. the provided file is an empty placeholder. run the script regularly
-   to manually update or use cron or something.
-3. add your admins to admins.lua
-4. add dofile("fap.lua") to server.lua or just change mp_luaserver to fap.lua
-
-
+1. delete system32
 
 TODO:
-hard - admin config files. modify admins in-game with files properly synced.
 medium - server setting presets, files?

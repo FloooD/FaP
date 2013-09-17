@@ -1,5 +1,5 @@
 need("fmt")
-need("admins")
+need("users")
 
 f.auth = {}
 f.auth.tab = {}
@@ -7,9 +7,10 @@ f.auth.tab = {}
 for i = 1, 32 do f.auth.tab[i] = {0} end
 
 function f.auth.onjoin(id)
-	f.auth.tab[id] = f.admins[player(id, "usgn")] or {0}
+	f.auth.tab[id] = f.users.tab[player(id, "usgn")] or {0}
 	if f.auth.tab[id][1] > 0 then
 		f_msg2(id, "sys", "Logged in as "..f.auth.tab[id][2])
+		f_msg2(id, "sys", "Your admin level is "..f.auth.tab[id][1])
 	end
 end
 

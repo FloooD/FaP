@@ -1,4 +1,5 @@
 need("fmt")
+need("users")
 need("auth")
 need("usdeids")
 
@@ -50,7 +51,10 @@ f.cmds.lut = {
   ["@p"]		= "_parse",
   ["@parse"]		= "_parse",
   ["@whois"]		= "_whois",
-  ["@rl"]		= "_rl"
+  ["@rl"]		= "_rl",
+  ["@useradd"]		= "_users",
+  ["@userdel"]		= "_users",
+  ["@userlist"]		= "_users"
 }
 
 for line in io.lines(f_dir.."default_cmds") do
@@ -70,8 +74,6 @@ f.cmds._generic = {
 		return 1
 	end
 }
-
-
 
 f.cmds._broadcast = {
   times = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -260,5 +262,74 @@ f.cmds._rl = {
 		f_msg(id, "sys", "Reloading server...")
   		parse("map "..game("sv_map"))
   		return 1
+	end
+}
+
+f.cmds._users = {
+  min_lvl = 4,
+  run = function(self, id, cmd, txt)
+		if cmd == "@userlist" then
+			f_msg2(id, "sys", "format:")
+			f_msg2(id, "red", "usgn, level, name, color")
+			f_msg2(id, "sys", "all users:")
+			for k, v in pairs(f.users.tab) do
+				f_msg2(id, "red", k..", "..v[1]..", "..v[2]..", "..v[3])
+			end
+			f_msg2(id, "sys", "currently logged in:")
+			for i = 1,32 do
+				if #f.auth.tab[i] > 1 then
+					f_msg2(id, "red", player(i, "usgn")..", "..f.auth.tab[i][1]..", "..f.auth.tab[i][2]..", "..f.auth.tab[i][3])
+				end
+			end
+			return 0
+		end
+
+		local u = tonumber(txt:find(",") and txt:sub(1, txt:find(",") - 1) or txt)
+		if not u or u == 0 then
+			f_msg2(id, "sys", "Usage:")
+			f_msg2(id, "sys", "@userlist")
+			f_msg2(id, "sys", "@useradd <usgn>,<level>,<name>,<color>")
+			f_msg2(id, "sys", "@userdel <usgn>")
+			f_msg2(id, "sys", "note: @useradd can also modify an existing user")
+			return 0
+		end
+
+		local exists = false
+		if f.users.tab[u] then exists = true end
+			
+		if cmd == "@useradd" then
+			if exists then
+				f_msg2(id, "sys", "user with usgn "..u.." already exists and will be modified.")
+			end
+			local ret = f.users.add(txt, ",")
+			if ret == 0 then
+				f_msg2(id, "sys", "user with usgn "..u.." added successfully")
+			elseif ret == 1 then
+				f_msg2(id, "sys", "wrong format. Usage: @useradd <usgn>,<level>,<name>,<color>")
+				return 0
+			elseif ret == 2 then
+				f_msg2(id, "sys", "invalid usgn")
+				return 0
+			elseif ret == 3 then
+				f_msg2(id, "sys", "color not found. user with usgn "..u.." added successfully with default color of red")
+			end
+			for i = 1, 32 do
+				if player(i, "usgn") == u then f.auth.onjoin(i) end
+			end
+			f.users.write()
+			return 1
+		elseif cmd == "@userdel" then
+			if not exists then
+				f_msg2(id, "sys", "user with usgn "..u.." does not exist.")
+				f_msg2(id, "sys", "use @userlist if you want to modify the user.")
+				return 0
+			end
+			f.users.tab[u] = nil
+			for i = 1, 32 do
+				if player(i, "usgn") == u then f.auth.onjoin(u) end
+			end
+			f.users.write()
+			return 1
+		end
 	end
 }

@@ -271,16 +271,22 @@ f.cmds._users = {
 		if cmd == "@userlist" then
 			f_msg2(id, "sys", "format:")
 			f_msg2(id, "red", "usgn, level, name, color")
-			f_msg2(id, "sys", "all users:")
-			for k, v in pairs(f.users.tab) do
-				f_msg2(id, "red", k..", "..v[1]..", "..v[2]..", "..v[3])
-			end
-			f_msg2(id, "sys", "currently logged in:")
+			f_msg2(id, "sys", "currently in server:")
+			local o = {}
 			for i = 1,32 do
 				if #f.auth.tab[i] > 1 then
-					f_msg2(id, "red", player(i, "usgn")..", "..f.auth.tab[i][1]..", "..f.auth.tab[i][2]..", "..f.auth.tab[i][3])
+					local u = player(i,"usgn")
+					o[u] = true
+					f_msg2(id, "green", player(i, "name")..": "..u..", "..f.auth.tab[i][1]..", "..f.auth.tab[i][2]..", "..f.auth.tab[i][3])
 				end
 			end
+			f_msg2(id, "sys", "not in server:")
+			for k, v in pairs(f.users.tab) do
+				if not o[k] then
+					f_msg2(id, "red", k..", "..v[1]..", "..v[2]..", "..v[3])
+				end
+			end
+			
 			return 0
 		end
 

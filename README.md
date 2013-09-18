@@ -1,18 +1,16 @@
-###FaP
-####FlooD's admin scriPt
+### FlooD's admin scriPt
+[latest version on github] (https://github.com/FloooD/FaP)
 
-latest version is always at
-(https://github.com/FloooD/FaP)
+#### usage:
+just make server.lua something like:
 
-contact:
-email - vomitme at gggmail
-xfire - apersonn
-
-### usage:
-1. make server.lua something like:
     f_dir = "sys/lua/" --basically the location to all the lua files
     f_admfile = "sys/lua/your_admins"
     dofile(f_dit.."fap.lua")
 
-### TODO:
-medium - server setting presets, files?
+#### todo:
+- [ ] server setting presets, files?
+
+#### contact:
+* email: vomitme at gggmail
+* xfire: apersonn

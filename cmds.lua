@@ -286,7 +286,6 @@ f.cmds._users = {
 					f_msg2(id, "red", k..", "..v[1]..", "..v[2]..", "..v[3])
 				end
 			end
-			
 			return 0
 		end
 

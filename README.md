@@ -6,7 +6,7 @@ just make server.lua something like:
 
     f_dir = "sys/lua/" --basically the location to all the lua files
     f_admfile = "sys/lua/your_admins"
-    dofile(f_dit.."fap.lua")
+    dofile(f_dir.."fap.lua")
 
 #### todo:
 - [ ] server setting presets, files?

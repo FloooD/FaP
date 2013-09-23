@@ -238,6 +238,7 @@ f.cmds._whois = {
   min_lvl = 2,
   run = function(self, id, cmd, txt)
 		local pid = tonumber(txt)
+		if not pid then return 0 end
 		if not player(pid, "exists") then
 			f_msg2(id, "sys", "Player with id "..pid.." does not exist.")
 			return 0

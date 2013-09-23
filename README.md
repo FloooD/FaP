@@ -10,22 +10,24 @@
    the third and fourth are your @say name and color, respectively. separate
    entries with tabs, not multiple spaces.
 
-2. admin levels:
-   1 and above have @say
-   2 and above have @lock, @swap, @specall, @make<spec|t|ct>, and @whois
-   3 and above have all rcon commands e.g. @kick, @banip, @equip, etc...
-   4 has everything, including @userlist, @useradd, @userdel
+2. admin levels description:
+   * 1 and above have @say
+   * 2 and above have @lock, @swap, @specall, @make<spec|t|ct>, and @whois
+   * 3 and above have all rcon commands e.g. @kick, @banip, @equip, etc...
+   * 4 has everything, including @userlist, @useradd, @userdel
 
-3. user management:
-   you can edit the admins file and restart the server to update the edits, or
+3. you can edit the admins file and restart the server to update the edits, or
    you can use the in-game system if you're a level 4 admin. the in-game
    system works like this:
-   @userlist
-       lists all the admins, online (in the server) or offline
-   @useradd <usgn>,<level>,<name>,<color>
-       adds a new admin. if there is already an admin with the usgn, then that admin is modified.
-   @userdel <usgn>
-       deletes an admin
+
+   * @userlist
+     + lists all the admins, online (in the server) or offline
+   * @useradd [usgn],[level],[name],[color]
+     + adds a new admin. if there is already an admin with the usgn, then that admin is modified.
+   * @userdel <usgn>
+     + deletes an admin
+
+   all changes are immediately written to the admins file
 
 4. make server.lua something like:
 

@@ -1,16 +1,17 @@
-### FlooD's admin scriPt
-[latest version on github] (https://github.com/FloooD/FaP)
+## FlooD's admin scriPt
+[latest version on github](https://github.com/FloooD/FaP)
 
 #### quick guide:
 1. edit the admins file in notepad to make yourself an admin. example:
 
-    12345	4	your_name	green
+        12345	4	your_name	green
 
    the first entry should be your usgn id, the second is your admin level, and
    the third and fourth are your @say name and color, respectively. separate
    entries with tabs, not multiple spaces.
 
 2. admin levels description:
+
    * 1 and above have @say
    * 2 and above have @lock, @swap, @specall, @make<spec|t|ct>, and @whois
    * 3 and above have all rcon commands e.g. @kick, @banip, @equip, etc...
@@ -21,19 +22,19 @@
    system works like this:
 
    * @userlist
-     + lists all the admins, online (in the server) or offline
+     - lists all the admins, online (in the server) or offline
    * @useradd [usgn],[level],[name],[color]
-     + adds a new admin. if there is already an admin with the usgn, then that admin is modified.
-   * @userdel <usgn>
-     + deletes an admin
+     - adds a new admin. if there is already an admin with the usgn, then that admin is modified.
+   * @userdel [usgn]
+     - deletes an admin
 
    all changes are immediately written to the admins file
 
 4. make server.lua something like:
 
-    f_dir = "sys/lua/" --the location to all the lua files
-    f_admfile = "sys/lua/admins"
-    dofile(f_dir.."fap.lua")
+        f_dir = "sys/lua/" --the location to all the lua files
+        f_admfile = "sys/lua/admins"
+        dofile(f_dir.."fap.lua")
 
 #### todo:
 - [ ] server setting presets, files?

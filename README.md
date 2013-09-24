@@ -24,7 +24,8 @@
    * @userlist
      - lists all the admins, online (in the server) or offline
    * @useradd [usgn],[level],[name],[color]
-     - adds a new admin. if there is already an admin with the usgn, then that admin is modified.
+     - adds a new admin. if there is already an admin with the usgn, then that
+       admin is modified.
    * @userdel [usgn]
      - deletes an admin
 

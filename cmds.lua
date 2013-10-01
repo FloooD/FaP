@@ -311,7 +311,8 @@ f.cmds._users = {
 			if ret == 0 then
 				f_msg2(id, "sys", "user with usgn "..u.." added successfully")
 			elseif ret == 1 then
-				f_msg2(id, "sys", "wrong format. Usage: @useradd <usgn>,<level>,<name>,<color>")
+				f_msg2(id, "sys", "wrong format. Usage: @useradd <usgn #>,<level>,<name>,<color>")
+				f_msg2(id, "sys", "<level> goes from 0 to 4 (like user, vip, mod, admin, superadmin)")
 				return 0
 			elseif ret == 2 then
 				f_msg2(id, "sys", "invalid usgn")

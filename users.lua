@@ -9,9 +9,7 @@ need("colors")
 ----level 4 will be the only level able to control admin configs in-game
 f.users = {}
 
-f.users.tab = {
---us id#-adm lvl-name---@say color
-}
+f.users.tab = {}
 
 function f.users.add(line, delim)
 	local t = {}
@@ -23,6 +21,9 @@ function f.users.add(line, delim)
 	if i ~= 4 then return 1 end --wrong format
 	local u = tonumber(t[1])
 	if not u or u < 1 then return 2 end --wrong usgn
+	local priv = tonumber(t[2])
+	if not priv then return 1 end
+	if not t[3] then return 1 end
 	local ret = 0
 	if not f.colors.presets[t[4]] then
 		ret = 3 --color doesnt exist, default to red

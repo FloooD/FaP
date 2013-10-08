@@ -2,7 +2,11 @@
 [latest version on github](https://github.com/FloooD/FaP)
 
 #### quick guide:
-1. edit the admins file in notepad to make yourself a superadmin. example:
+0. download a [zip](https://github.com/FloooD/FaP/archive/master.zip), extract,
+   and move the FaP directory into `<cs2d folder>/sys/lua`.
+
+1. edit the admins file in notepad or something to make yourself a superadmin.
+   example:
 
         12345	4	your_name	green
 
@@ -31,8 +35,8 @@
 
 4. make server.lua something like:
 
-        f_dir = "sys/lua/" --the location to all the lua files
-        f_admfile = "sys/lua/admins"
+        f_dir = "sys/lua/FaP/" --the location to all the lua files
+        f_admfile = "sys/lua/FaP/admins"
         dofile(f_dir.."fap.lua")
 
 5. to see usgn names in @whois, run update.sh from the `usdelist/` directory.

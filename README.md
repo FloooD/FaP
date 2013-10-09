@@ -52,6 +52,7 @@
 
 #### todo:
 - [ ] server setting presets, files?
+- [ ] voting system for kicking players, changing map, restarting
 
 #### contact:
 * email: vomitme at gggmail

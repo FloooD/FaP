@@ -53,6 +53,7 @@
 #### todo:
 - [ ] server setting presets, files?
 - [ ] voting system for kicking players, changing map, restarting
+- [ ] password based login system for times when usgn is offline
 
 #### contact:
 * email: vomitme at gggmail

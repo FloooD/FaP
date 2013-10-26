@@ -2,10 +2,10 @@
 [latest version on github](https://github.com/FloooD/FaP)
 
 #### quick guide:
-0. download a [zip](https://github.com/FloooD/FaP/archive/master.zip), extract,
+1. download a [zip](https://github.com/FloooD/FaP/archive/master.zip), extract,
    and move the FaP directory into `<cs2d folder>/sys/lua`.
 
-1. edit the admins file in notepad or something to make yourself a superadmin.
+2. edit the admins file in notepad or something to make yourself a superadmin.
    example:
 
         12345	4	your_name	green
@@ -14,13 +14,13 @@
    third and fourth are your @say name and color, respectively. separate the
    entries with tabs, not multiple spaces.
 
-2. admin levels description:
+3. admin levels description:
    * 1 and above have @say
    * 2 and above have @lock, @swap, @specall, @make<spec|t|ct>, and @whois
    * 3 and above have all rcon commands e.g. @kick, @banip, @equip, etc...
    * 4 has everything, including @userlist, @useradd, @userdel
 
-3. you can edit the admins file and restart the server to update the edits, or
+4. you can edit the admins file and restart the server to update the edits, or
    you can use the in-game system if you're a level 4 admin. the in-game
    system works like this:
    * @userlist
@@ -33,13 +33,13 @@
 
    all changes are immediately written to the admins file
 
-4. make server.lua something like:
+5. make server.lua something like:
 
         f_dir = "sys/lua/FaP/" --the location to all the lua files
         f_admfile = "sys/lua/FaP/admins"
         dofile(f_dir.."fap.lua")
 
-5. to see usgn names in @whois, run update.sh from the `usdelist/` directory.
+6. to see usgn names in @whois, run update.sh from the `usdelist/` directory.
    you can run it periodically to keep the list updated.
 
         cd usdelist/
